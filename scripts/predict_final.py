@@ -89,8 +89,9 @@ def make_view(data, cutoff, user_ids, gap, *, labeled, horizon=WEEK, daily=False
 class Attach:
     """Attach labels and history statistics to a batch and move the seed time forward by the gap."""
 
-    def __init__(self, target, stats, gap_seconds):
+    def __init__(self, target, stats, gap_seconds, use_event_time=False):
         self.target, self.stats, self.gap_seconds = target, stats, gap_seconds
+        self.use_event_time = use_event_time
 
     def __call__(self, batch):
         store = batch[R.ENTITY]
@@ -100,6 +101,11 @@ class Attach:
         if self.stats is not None:
             store.hist_stats = self.stats[index]
         store.seed_time = store.seed_time + self.gap_seconds
+        if self.use_event_time:
+            # The relative-age encoder reads `time`; sampling has already happened with the row time.
+            for name in R.EVENT_TIME_COLUMN:
+                if name in batch.node_types and "event_time" in batch[name]:
+                    batch[name].time = batch[name].event_time
         return batch
 
 
@@ -123,7 +129,7 @@ def make_loader(graph, data, user_ids, views, cold_id, args, gap, shuffle, hist=
             stats.append(hist.stats(view.cutoff, gap))
     target = torch.from_numpy(np.concatenate(targets)) if targets else None
     transform = Attach(target, torch.from_numpy(np.concatenate(stats)) if stats else None,
-                       int(gap.total_seconds()))
+                       int(gap.total_seconds()), args.relative_from_created)
     loader = NeighborLoader(graph, num_neighbors=R.neighbors_by_hop(args.hops), time_attr="time",
                             input_nodes=(R.ENTITY, torch.from_numpy(np.concatenate(nodes))),
                             input_time=torch.from_numpy(np.concatenate(times)), transform=transform,
@@ -141,7 +147,8 @@ def run_seed(seed, args, graph, column_stats, data, user_ids, cold_id, hist, gap
     history = R.RelBenchActivityHistory(graph_model, cold_id).to(device)
 
     # Stage 1: pretrain the encoder on next-day labels with cutoffs whose day ends before validation.
-    day_cutoffs = training_cutoffs(data.coverage, val_time, args.min_history_hours, stride=DAY, target_horizon=DAY)
+    day_cutoffs = training_cutoffs(data.coverage, val_time, args.min_history_hours, stride=DAY * args.train_stride_days,
+                                  target_horizon=DAY)
     pre_views = [make_view(data, c, user_ids, gap, labeled=True, horizon=DAY) for c in day_cutoffs]
     loader, mask = make_loader(graph, data, user_ids, pre_views, cold_id, args, gap, True)
     del pre_views
@@ -161,7 +168,7 @@ def run_seed(seed, args, graph, column_stats, data, user_ids, cold_id, hist, gap
     if args.history != "none":
         model.extras = HistoryExtras(R.DAILY_HIDDEN_SIZE, cold_id).to(device)
     optimizer = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad), lr=R.DAILY_LEARNING_RATE)
-    train_cutoffs = training_cutoffs(data.coverage, val_time, args.min_history_hours, stride=DAY)
+    train_cutoffs = training_cutoffs(data.coverage, val_time, args.min_history_hours, stride=DAY * args.train_stride_days)
     train_views = [make_view(data, c, user_ids, gap, labeled=True, daily=True) for c in train_cutoffs]
     train_loader, train_mask = make_loader(graph, data, user_ids, train_views, cold_id, args, gap, True, hist)
     del train_views
@@ -176,6 +183,11 @@ def run_seed(seed, args, graph, column_stats, data, user_ids, cold_id, hist, gap
         val_probabilities = R.predict(model, val_loader, device)
         _, score = choose_thresholds(val_probabilities, views["validation"])
         epochs.append({"epoch": epoch, "loss": loss, "validation_score": score, "seconds": perf_counter() - started})
+        if args.log_test_each_epoch:
+            # Diagnostic for backtests: the test score this epoch would give with its own validation thresholds.
+            epoch_thresholds, _ = choose_thresholds(val_probabilities, views["validation"])
+            epochs[-1]["test_score"] = evaluate_week(R.predict(model, test_loader, device) >= epoch_thresholds,
+                                                    views["forecast"])["score"]
         print(json.dumps({"seed": seed, "stage": "gru", **epochs[-1]}), flush=True)
         if score > best_score + 1e-12:
             best_score, best_epoch = score, epoch
@@ -216,7 +228,23 @@ def main():
     parser.add_argument("--patience", type=int, default=6)
     parser.add_argument("--batch-size", type=int, default=512)
     parser.add_argument("--min-history-hours", type=int, default=24)
+    parser.add_argument("--log-test-each-epoch", action="store_true",
+                        help="Backtest diagnostic: record the test score of every epoch.")
     parser.add_argument("--history", choices=["none", "stats"], default="stats")
+    parser.add_argument("--drop-timestamp-features", action="store_true",
+                        help="Ablation: do not encode created_at/submitted_at columns (month, weekday, hour).")
+    parser.add_argument("--keep-columns", nargs="*", default=["PRReviews.state", "Pushes.is_new_ref"],
+                        help="Feature columns the graph keeps, written Table.column (default: the two used by the final model).")
+    parser.add_argument("--all-columns", action="store_true",
+                        help="Ablation: keep every feature column instead of --keep-columns.")
+    parser.add_argument("--train-stride-days", type=int, default=1,
+                        help="Ablation: days between training cutoffs (1 = a cutoff every day, 7 = weekly).")
+    parser.add_argument("--relative-from-created", action="store_true",
+                        help="Ablation: relative age = cutoff minus created_at/submitted_at instead of minus first_seen_at.")
+    parser.add_argument("--keep-time-columns", action="store_true",
+                        help="Ablation: also encode the absolute timestamp columns; by default only the relative age is used.")
+    parser.add_argument("--drop-stypes", nargs="*", default=[],
+                        help="Ablation: leave out all feature columns of these types, e.g. timestamp text_embedded.")
     parser.add_argument("--device", choices=["cuda", "cpu"])
     parser.add_argument("--threads", type=int)
     parser.add_argument("--deterministic", action="store_true",
@@ -262,7 +290,12 @@ def main():
     data = ActivityData(args.db, coverage)
     hist = GapHistoryInputs(data.events, user_ids) if args.history != "none" else None
     database, cold_id = R.read_database(args.db, available, coverage.start)
-    graph, column_stats, _ = R.make_graph(database, GloveTextEmbedding, fit_before=val_time)
+    graph, column_stats, _ = R.make_graph(database, GloveTextEmbedding, fit_before=val_time,
+                                           keep_columns=None if args.all_columns else set(args.keep_columns),
+                                           drop_time_columns=not args.keep_time_columns,
+                                           drop_stypes=set(args.drop_stypes) | ({"timestamp"} if args.drop_timestamp_features else set()))
+    if args.relative_from_created:
+        R.add_event_times(graph, database)
     print(f"{sum(graph.num_nodes_dict.values()):,} nodes | {graph.num_edges:,} directed edges", flush=True)
 
     views = {"validation": make_view(data, val_time, user_ids, gap, labeled=True),

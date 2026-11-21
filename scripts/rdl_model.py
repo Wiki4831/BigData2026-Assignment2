@@ -17,6 +17,7 @@ from torch.nn import functional as F
 from torch_frame import stype
 from torch_frame.config import TextEmbedderConfig
 from torch_frame.data import Dataset
+from relbench.modeling.utils import to_unix_time
 
 from common import ROOT
 from evaluate import EVENT_COLS
@@ -122,7 +123,7 @@ def read_database(db_dir, cutoff, start):
     return Database(tables), cold_id
 
 
-def make_graph(database, text_embedder, *, fit_before):
+def make_graph(database, text_embedder, *, fit_before, drop_stypes=(), keep_columns=None, drop_time_columns=False):
     """Build the PK/FK graph; feature transforms are fitted on rows before `fit_before` only."""
     fit_database = Database({name: table.upto(fit_before - pd.Timedelta(seconds=1))
                              for name, table in database.table_dict.items()})
@@ -133,8 +134,20 @@ def make_graph(database, text_embedder, *, fit_before):
         for column in FEATURE_COLUMNS[name]:
             if not table.df[column].notna().any():
                 types.pop(column, None)
+            elif keep_columns is not None and f"{name}.{column}" not in keep_columns:
+                # Ablation: keep only the listed "Table.column" feature columns.
+                types.pop(column, None)
+            elif types[column].value in drop_stypes:
+                # Ablation: leave out all columns of these semantic types (e.g. "timestamp", "text_embedded").
+                types.pop(column, None)
             elif types[column] == stype.text_embedded:
                 text_columns.append(f"{name}.{column}")
+
+    if drop_time_columns:
+        # Ablation: remove every timestamp column, including each table's row time, so only the relative age remains.
+        for name in fit_database.table_dict:
+            for column in [c for c, t in semantic_types[name].items() if t == stype.timestamp]:
+                semantic_types[name].pop(column)
 
     print(f"Inferred text feature columns: {', '.join(text_columns)}", flush=True)
     config = None
@@ -157,6 +170,19 @@ def make_graph(database, text_embedder, *, fit_before):
         graph[name].tf = fitted.convert_to_tensor_frame(database.table_dict[name].df)
         column_stats[name] = fitted.col_stats
     return graph, column_stats, text_columns
+
+
+# Time at which the object itself happened. A row can enter the data (first_seen_at) long after this time.
+EVENT_TIME_COLUMN = {"PullRequests": "created_at", "Issues": "created_at", "PRReviews": "submitted_at"}
+
+
+def add_event_times(graph, database):
+    """Store `event_time` per node for the relative-age encoder. Sampling still uses the row time (no leakage)."""
+    for name, column in EVENT_TIME_COLUMN.items():
+        table = database.table_dict[name]
+        row_time, event = table.df[table.time_col], table.df[column]
+        # Fall back to the row time when the event time is unknown or later than the row time.
+        graph[name].event_time = torch.from_numpy(to_unix_time(event.where(event.notna() & (event <= row_time), row_time)))
 
 
 def neighbors_by_hop(hops):

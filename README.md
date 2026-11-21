@@ -147,6 +147,9 @@ Our model is a RelBench-style heterogeneous GraphSAGE encoder (3 hops, temporal 
 pretrained on next-day activity prediction and then frozen, followed by a 7-step GRU over the forecast days
 and a per-user recent-statistics module; the weekly probability is the maximum of the 7 daily probabilities
 and thresholds are chosen on a validation week. A single seed (42) is used for the final run.
+The graph encoder reads only two feature columns (`PRReviews.state`, `Pushes.is_new_ref`) and no absolute
+timestamps: time enters only as the relative age of each row at the cutoff. Pass `--all-columns` and
+`--keep-time-columns` to `scripts/predict_final.py` to restore all columns (an ablation, not the submission).
 
 ```bash
 # 0. Environments (GPU, about 24 GB; the model was developed on an RTX 4090)
@@ -169,6 +172,7 @@ Notes for the reader:
   week starts), and the validation week is the latest 7-day Taiwan-midnight window that ends inside the data.
 - With fixed seeds and deterministic settings the same machine and package versions reproduce the same file.
   A different GPU model can change floating-point results slightly, so a few 0/1 entries may differ.
+- The GloVe text embedder is only loaded when text columns are kept (`--all-columns`); the submitted model does not use it.
 - Recorded versions: Python 3.11, torch 2.11.0+cu128, torch-geometric 2.8.1, pytorch-frame 0.3.0,
   pyg-lib 0.9.0, sentence-transformers 6.3.0, relbench commit `5bec345f`.
 - `scripts/setup_relbench.sh` records the setup that was used; it has not been re-run from an empty folder.

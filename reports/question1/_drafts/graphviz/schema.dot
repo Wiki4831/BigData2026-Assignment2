@@ -1,0 +1,40 @@
+digraph Assignment2 {
+  graph [rankdir=LR, bgcolor="white", pad="0.3", nodesep="0.7",
+         ranksep="1.15", splines=spline, outputorder=edgesfirst,
+         fontname="DejaVu Sans", fontsize=19, labelloc=t,
+         label="Assignment 2: Schema Graph\n8 tables | 20 foreign keys | arrows: FK -> PK\n",
+         dpi=160];
+  node [shape=plain, fontname="DejaVu Sans", fontsize=12];
+  edge [penwidth=1.4, arrowsize=0.8];
+  { rank=same; PRReviewComments; IssueComments; Pushes; }
+  { rank=same; PRReviews; Issues; }
+  { rank=same; Users; Repositories; }
+  Users [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#718096"><TR><TD COLSPAN="2" BGCOLOR="#2463a0"><FONT COLOR="white"><B>Users</B></FONT></TD></TR><TR><TD BGCOLOR="#e8f0fb"><B>PK</B></TD><TD PORT="user_id" ALIGN="LEFT" BGCOLOR="#e8f0fb">user_id</TD></TR></TABLE>>];
+  Repositories [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#718096"><TR><TD COLSPAN="2" BGCOLOR="#a35f15"><FONT COLOR="white"><B>Repositories</B></FONT></TD></TR><TR><TD BGCOLOR="#e8f0fb"><B>PK</B></TD><TD PORT="repo_id" ALIGN="LEFT" BGCOLOR="#e8f0fb">repo_id</TD></TR></TABLE>>];
+  PullRequests [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#718096"><TR><TD COLSPAN="2" BGCOLOR="#7350a1"><FONT COLOR="white"><B>PullRequests</B></FONT></TD></TR><TR><TD BGCOLOR="#e8f0fb"><B>PK</B></TD><TD PORT="pr_id" ALIGN="LEFT" BGCOLOR="#e8f0fb">pr_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="repo_id" ALIGN="LEFT" BGCOLOR="#fff5df">repo_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="author_id" ALIGN="LEFT" BGCOLOR="#fff5df">author_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="merged_by_id" ALIGN="LEFT" BGCOLOR="#fff5df">merged_by_id</TD></TR></TABLE>>];
+  Issues [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#718096"><TR><TD COLSPAN="2" BGCOLOR="#287d54"><FONT COLOR="white"><B>Issues</B></FONT></TD></TR><TR><TD BGCOLOR="#e8f0fb"><B>PK</B></TD><TD PORT="issue_id" ALIGN="LEFT" BGCOLOR="#e8f0fb">issue_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="repo_id" ALIGN="LEFT" BGCOLOR="#fff5df">repo_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="author_id" ALIGN="LEFT" BGCOLOR="#fff5df">author_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="pull_request_id" ALIGN="LEFT" BGCOLOR="#fff5df">pull_request_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="assignee_id" ALIGN="LEFT" BGCOLOR="#fff5df">assignee_id</TD></TR></TABLE>>];
+  IssueComments [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#718096"><TR><TD COLSPAN="2" BGCOLOR="#39747e"><FONT COLOR="white"><B>IssueComments</B></FONT></TD></TR><TR><TD BGCOLOR="#e8f0fb"><B>PK</B></TD><TD PORT="comment_id" ALIGN="LEFT" BGCOLOR="#e8f0fb">comment_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="issue_id" ALIGN="LEFT" BGCOLOR="#fff5df">issue_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="repo_id" ALIGN="LEFT" BGCOLOR="#fff5df">repo_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="author_id" ALIGN="LEFT" BGCOLOR="#fff5df">author_id</TD></TR></TABLE>>];
+  PRReviews [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#718096"><TR><TD COLSPAN="2" BGCOLOR="#b34e52"><FONT COLOR="white"><B>PRReviews</B></FONT></TD></TR><TR><TD BGCOLOR="#e8f0fb"><B>PK</B></TD><TD PORT="review_id" ALIGN="LEFT" BGCOLOR="#e8f0fb">review_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="pr_id" ALIGN="LEFT" BGCOLOR="#fff5df">pr_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="repo_id" ALIGN="LEFT" BGCOLOR="#fff5df">repo_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="reviewer_id" ALIGN="LEFT" BGCOLOR="#fff5df">reviewer_id</TD></TR></TABLE>>];
+  PRReviewComments [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#718096"><TR><TD COLSPAN="2" BGCOLOR="#337f85"><FONT COLOR="white"><B>PRReviewComments</B></FONT></TD></TR><TR><TD BGCOLOR="#e8f0fb"><B>PK</B></TD><TD PORT="comment_id" ALIGN="LEFT" BGCOLOR="#e8f0fb">comment_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="pr_id" ALIGN="LEFT" BGCOLOR="#fff5df">pr_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="repo_id" ALIGN="LEFT" BGCOLOR="#fff5df">repo_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="author_id" ALIGN="LEFT" BGCOLOR="#fff5df">author_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="pull_request_review_id" ALIGN="LEFT" BGCOLOR="#fff5df">pull_request_review_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="in_reply_to_id" ALIGN="LEFT" BGCOLOR="#fff5df">in_reply_to_id</TD></TR></TABLE>>];
+  Pushes [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#718096"><TR><TD COLSPAN="2" BGCOLOR="#555e70"><FONT COLOR="white"><B>Pushes</B></FONT></TD></TR><TR><TD BGCOLOR="#e8f0fb"><B>PK</B></TD><TD PORT="push_id" ALIGN="LEFT" BGCOLOR="#e8f0fb">push_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="user_id" ALIGN="LEFT" BGCOLOR="#fff5df">user_id</TD></TR><TR><TD BGCOLOR="#fff5df"><B>FK</B></TD><TD PORT="repo_id" ALIGN="LEFT" BGCOLOR="#fff5df">repo_id</TD></TR></TABLE>>];
+  PullRequests:repo_id:e -> Repositories:repo_id:w [color="#a35f15", tooltip="PullRequests.repo_id -> Repositories.repo_id"];
+  PullRequests:author_id:e -> Users:user_id:w [color="#2463a0", tooltip="PullRequests.author_id -> Users.user_id"];
+  PullRequests:merged_by_id:e -> Users:user_id:w [color="#2463a0", tooltip="PullRequests.merged_by_id -> Users.user_id"];
+  Issues:repo_id:e -> Repositories:repo_id:w [color="#a35f15", tooltip="Issues.repo_id -> Repositories.repo_id"];
+  Issues:author_id:e -> Users:user_id:w [color="#2463a0", tooltip="Issues.author_id -> Users.user_id"];
+  Issues:pull_request_id:e -> PullRequests:pr_id:w [color="#7350a1", tooltip="Issues.pull_request_id -> PullRequests.pr_id"];
+  Issues:assignee_id:e -> Users:user_id:w [color="#2463a0", tooltip="Issues.assignee_id -> Users.user_id"];
+  IssueComments:issue_id:e -> Issues:issue_id:w [color="#287d54", tooltip="IssueComments.issue_id -> Issues.issue_id"];
+  IssueComments:repo_id:e -> Repositories:repo_id:w [color="#a35f15", tooltip="IssueComments.repo_id -> Repositories.repo_id"];
+  IssueComments:author_id:e -> Users:user_id:w [color="#2463a0", tooltip="IssueComments.author_id -> Users.user_id"];
+  PRReviews:pr_id:e -> PullRequests:pr_id:w [color="#7350a1", tooltip="PRReviews.pr_id -> PullRequests.pr_id"];
+  PRReviews:repo_id:e -> Repositories:repo_id:w [color="#a35f15", tooltip="PRReviews.repo_id -> Repositories.repo_id"];
+  PRReviews:reviewer_id:e -> Users:user_id:w [color="#2463a0", tooltip="PRReviews.reviewer_id -> Users.user_id"];
+  PRReviewComments:pr_id:e -> PullRequests:pr_id:w [color="#7350a1", tooltip="PRReviewComments.pr_id -> PullRequests.pr_id"];
+  PRReviewComments:repo_id:e -> Repositories:repo_id:w [color="#a35f15", tooltip="PRReviewComments.repo_id -> Repositories.repo_id"];
+  PRReviewComments:author_id:e -> Users:user_id:w [color="#2463a0", tooltip="PRReviewComments.author_id -> Users.user_id"];
+  PRReviewComments:pull_request_review_id:e -> PRReviews:review_id:w [color="#b34e52", tooltip="PRReviewComments.pull_request_review_id -> PRReviews.review_id"];
+  PRReviewComments:in_reply_to_id:n -> PRReviewComments:comment_id:n [color="#337f85", tooltip="PRReviewComments.in_reply_to_id -> PRReviewComments.comment_id"];
+  Pushes:user_id:e -> Users:user_id:w [color="#2463a0", tooltip="Pushes.user_id -> Users.user_id"];
+  Pushes:repo_id:e -> Repositories:repo_id:w [color="#a35f15", tooltip="Pushes.repo_id -> Repositories.repo_id"];
+}

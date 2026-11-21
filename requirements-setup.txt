@@ -1,0 +1,5 @@
+# Core dependencies actually verified with the official preprocessing/evaluation scripts.
+# Already installed in conda environment `bigdata`; no installation is needed there.
+numpy==2.4.6
+pandas==3.0.6
+pyarrow==26.0.0

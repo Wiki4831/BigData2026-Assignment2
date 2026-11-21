@@ -1,0 +1,13 @@
+name: bigdata-asg2
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy>=1.26
+  - pandas>=2.0
+  - pyarrow>=14
+  - ipykernel
+  - jupyterlab
+  - matplotlib
+  - nbformat
+  - nbclient

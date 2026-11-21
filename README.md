@@ -132,3 +132,43 @@ week of 2026/09/27 – 10/04.
 The data used in this assignment is sourced from [GH Archive](https://www.gharchive.org), a
 publicly available archive of GitHub events. This assignment is intended for educational
 purposes within this course.
+
+## Data Source
+
+The raw events come from [GH Archive](https://www.gharchive.org/) hourly files
+(`https://data.gharchive.org/YYYY-MM-DD-H.json.gz`, UTC), downloaded with `scripts/download_gharchive.py`
+from 2026-10-01 00:00 UTC up to the last completed UTC day before the test cutoff
+(2026-11-21 16:00 UTC). All tables are built by the provided `scripts/preprocess.py`, unchanged.
+Some hours are missing or incomplete in GH Archive itself; the download manifest records them.
+
+## Reproducing our submission
+
+Our model is a RelBench-style heterogeneous GraphSAGE encoder (3 hops, temporal neighbour sampling),
+pretrained on next-day activity prediction and then frozen, followed by a 7-step GRU over the forecast days
+and a per-user recent-statistics module; the weekly probability is the maximum of the 7 daily probabilities
+and thresholds are chosen on a validation week. A single seed (42) is used for the final run.
+
+```bash
+# 0. Environments (GPU, about 24 GB; the model was developed on an RTX 4090)
+conda env create -f environment.yml             # base env: preprocessing and evaluation
+conda activate bigdata-asg2                     # scripts use `python` from the active env (or set ASG2_PYTHON)
+bash scripts/setup_relbench.sh                  # RelBench venv + GloVe cache under data/model/relbench_public
+
+# 1. Everything else: download, official preprocessing, training, prediction, format check
+bash scripts/run_final.sh STUDENT_ID            # writes output_STUDENT_ID.csv in the project folder
+```
+
+`run_final.sh` runs, in order: `scripts/download_gharchive.py` (2026-10-01 to 2026-11-20 UTC) ->
+`scripts/preprocess.py --raw data/raw/gharchive --out data/processed` -> `scripts/predict_final.py`
+(seed 42, `--deterministic`) -> `scripts/evaluate.py` (format check). Paths and the Python
+interpreters can be overridden with environment variables listed at the top of the script.
+
+Notes for the reader:
+
+- Training rows are visible only before the cutoff minus the data gap (the files end before the test
+  week starts), and the validation week is the latest 7-day Taiwan-midnight window that ends inside the data.
+- With fixed seeds and deterministic settings the same machine and package versions reproduce the same file.
+  A different GPU model can change floating-point results slightly, so a few 0/1 entries may differ.
+- Recorded versions: Python 3.11, torch 2.11.0+cu128, torch-geometric 2.8.1, pytorch-frame 0.3.0,
+  pyg-lib 0.9.0, sentence-transformers 6.3.0, relbench commit `5bec345f`.
+- `scripts/setup_relbench.sh` records the setup that was used; it has not been re-run from an empty folder.

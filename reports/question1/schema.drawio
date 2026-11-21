@@ -1,0 +1,320 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" compressed="false">
+  <diagram id="assignment2-schema" name="Schema Graph">
+    <mxGraphModel dx="1960" dy="1440" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1960" pageHeight="1440" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Assignment 2 | Schema Graph" vertex="1" parent="1" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=30;fontColor=#263447;">
+          <mxGeometry x="60" y="35" width="1840" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="8 tables  |  8 primary keys (PK)  |  20 foreign keys (FK)  |  Arrows: FK -&gt; referenced PK" vertex="1" parent="1" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=18;fontColor=#263447;">
+          <mxGeometry x="60" y="95" width="1840" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="scope" value="Key columns shown. Each row and connector is editable; drag a table header to reposition its fields." vertex="1" parent="1" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#263447;">
+          <mxGeometry x="60" y="132" width="1840" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="period" value="Dataset (UTC): [2026-10-01 00:00, 2026-11-18 00:00)  |  1,152 hourly files" vertex="1" parent="1" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=18;fontColor=#263447;">
+          <mxGeometry x="60" y="1350" width="1840" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="Anonymized code columns (e.g. github_user_id, org_id, head_repo_id) are not foreign keys." vertex="1" parent="1" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#263447;">
+          <mxGeometry x="60" y="1390" width="1840" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="table__Users" value="Users" vertex="1" parent="1" style="swimlane;horizontal=1;startSize=40;collapsible=0;container=1;recursiveResize=0;html=0;rounded=0;fillColor=#2463a0;swimlaneFillColor=#ffffff;strokeColor=#718096;fontColor=#ffffff;fontSize=19;fontStyle=1;fontFamily=Helvetica;align=center;">
+          <mxGeometry x="1560" y="450" width="340" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Users__user_id" value="[PK]  user_id" vertex="1" parent="table__Users" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#e8f0fb;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="40" width="340" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="table__Repositories" value="Repositories" vertex="1" parent="1" style="swimlane;horizontal=1;startSize=40;collapsible=0;container=1;recursiveResize=0;html=0;rounded=0;fillColor=#a35f15;swimlaneFillColor=#ffffff;strokeColor=#718096;fontColor=#ffffff;fontSize=19;fontStyle=1;fontFamily=Helvetica;align=center;">
+          <mxGeometry x="1560" y="950" width="340" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Repositories__repo_id" value="[PK]  repo_id" vertex="1" parent="table__Repositories" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#e8f0fb;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="40" width="340" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="table__PullRequests" value="PullRequests" vertex="1" parent="1" style="swimlane;horizontal=1;startSize=40;collapsible=0;container=1;recursiveResize=0;html=0;rounded=0;fillColor=#7350a1;swimlaneFillColor=#ffffff;strokeColor=#718096;fontColor=#ffffff;fontSize=19;fontStyle=1;fontFamily=Helvetica;align=center;">
+          <mxGeometry x="1060" y="600" width="340" height="184" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PullRequests__pr_id" value="[PK]  pr_id" vertex="1" parent="table__PullRequests" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#e8f0fb;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="40" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PullRequests__repo_id" value="[FK]  repo_id" vertex="1" parent="table__PullRequests" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="76" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PullRequests__author_id" value="[FK]  author_id" vertex="1" parent="table__PullRequests" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="112" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PullRequests__merged_by_id" value="[FK]  merged_by_id" vertex="1" parent="table__PullRequests" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="148" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="table__Issues" value="Issues" vertex="1" parent="1" style="swimlane;horizontal=1;startSize=40;collapsible=0;container=1;recursiveResize=0;html=0;rounded=0;fillColor=#287d54;swimlaneFillColor=#ffffff;strokeColor=#718096;fontColor=#ffffff;fontSize=19;fontStyle=1;fontFamily=Helvetica;align=center;">
+          <mxGeometry x="560" y="800" width="340" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Issues__issue_id" value="[PK]  issue_id" vertex="1" parent="table__Issues" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#e8f0fb;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="40" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Issues__repo_id" value="[FK]  repo_id" vertex="1" parent="table__Issues" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="76" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Issues__author_id" value="[FK]  author_id" vertex="1" parent="table__Issues" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="112" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Issues__pull_request_id" value="[FK]  pull_request_id" vertex="1" parent="table__Issues" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="148" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Issues__assignee_id" value="[FK]  assignee_id" vertex="1" parent="table__Issues" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="184" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="table__IssueComments" value="IssueComments" vertex="1" parent="1" style="swimlane;horizontal=1;startSize=40;collapsible=0;container=1;recursiveResize=0;html=0;rounded=0;fillColor=#39747e;swimlaneFillColor=#ffffff;strokeColor=#718096;fontColor=#ffffff;fontSize=19;fontStyle=1;fontFamily=Helvetica;align=center;">
+          <mxGeometry x="60" y="770" width="340" height="184" as="geometry" />
+        </mxCell>
+        <mxCell id="key__IssueComments__comment_id" value="[PK]  comment_id" vertex="1" parent="table__IssueComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#e8f0fb;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="40" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__IssueComments__issue_id" value="[FK]  issue_id" vertex="1" parent="table__IssueComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="76" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__IssueComments__repo_id" value="[FK]  repo_id" vertex="1" parent="table__IssueComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="112" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__IssueComments__author_id" value="[FK]  author_id" vertex="1" parent="table__IssueComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="148" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="table__PRReviews" value="PRReviews" vertex="1" parent="1" style="swimlane;horizontal=1;startSize=40;collapsible=0;container=1;recursiveResize=0;html=0;rounded=0;fillColor=#b34e52;swimlaneFillColor=#ffffff;strokeColor=#718096;fontColor=#ffffff;fontSize=19;fontStyle=1;fontFamily=Helvetica;align=center;">
+          <mxGeometry x="560" y="340" width="340" height="184" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviews__review_id" value="[PK]  review_id" vertex="1" parent="table__PRReviews" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#e8f0fb;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="40" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviews__pr_id" value="[FK]  pr_id" vertex="1" parent="table__PRReviews" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="76" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviews__repo_id" value="[FK]  repo_id" vertex="1" parent="table__PRReviews" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="112" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviews__reviewer_id" value="[FK]  reviewer_id" vertex="1" parent="table__PRReviews" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="148" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="table__PRReviewComments" value="PRReviewComments" vertex="1" parent="1" style="swimlane;horizontal=1;startSize=40;collapsible=0;container=1;recursiveResize=0;html=0;rounded=0;fillColor=#337f85;swimlaneFillColor=#ffffff;strokeColor=#718096;fontColor=#ffffff;fontSize=19;fontStyle=1;fontFamily=Helvetica;align=center;">
+          <mxGeometry x="60" y="300" width="340" height="256" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviewComments__comment_id" value="[PK]  comment_id" vertex="1" parent="table__PRReviewComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#e8f0fb;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="40" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviewComments__pr_id" value="[FK]  pr_id" vertex="1" parent="table__PRReviewComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="76" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviewComments__repo_id" value="[FK]  repo_id" vertex="1" parent="table__PRReviewComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="112" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviewComments__author_id" value="[FK]  author_id" vertex="1" parent="table__PRReviewComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="148" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviewComments__pull_request_review_id" value="[FK]  pull_request_review_id" vertex="1" parent="table__PRReviewComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="184" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__PRReviewComments__in_reply_to_id" value="[FK]  in_reply_to_id" vertex="1" parent="table__PRReviewComments" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="220" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="table__Pushes" value="Pushes" vertex="1" parent="1" style="swimlane;horizontal=1;startSize=40;collapsible=0;container=1;recursiveResize=0;html=0;rounded=0;fillColor=#555e70;swimlaneFillColor=#ffffff;strokeColor=#718096;fontColor=#ffffff;fontSize=19;fontStyle=1;fontFamily=Helvetica;align=center;">
+          <mxGeometry x="60" y="1100" width="340" height="148" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Pushes__push_id" value="[PK]  push_id" vertex="1" parent="table__Pushes" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#e8f0fb;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="40" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Pushes__user_id" value="[FK]  user_id" vertex="1" parent="table__Pushes" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="76" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="key__Pushes__repo_id" value="[FK]  repo_id" vertex="1" parent="table__Pushes" style="rounded=0;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacingLeft=12;fontSize=16;fontFamily=Helvetica;fillColor=#fff5df;strokeColor=#cbd5e1;strokeWidth=0.6;fontColor=#162234;">
+          <mxGeometry x="0" y="112" width="340" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="fk__PullRequests__repo_id" edge="1" parent="1" source="key__PullRequests__repo_id" target="key__Repositories__repo_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#a35f15;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.142857;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1540" y="694" />
+              <mxPoint x="1540" y="1001.4285714285714" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PullRequests__author_id" edge="1" parent="1" source="key__PullRequests__author_id" target="key__Users__user_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#2463a0;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.111111;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1450" y="730" />
+              <mxPoint x="1450" y="498.8888888888889" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PullRequests__merged_by_id" edge="1" parent="1" source="key__PullRequests__merged_by_id" target="key__Users__user_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#2463a0;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.222222;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1470" y="766" />
+              <mxPoint x="1470" y="507.77777777777777" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__Issues__repo_id" edge="1" parent="1" source="key__Issues__repo_id" target="key__Repositories__repo_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#a35f15;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.285714;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940" y="894" />
+              <mxPoint x="940" y="1140" />
+              <mxPoint x="1470" y="1140" />
+              <mxPoint x="1470" y="1012.8571428571429" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__Issues__author_id" edge="1" parent="1" source="key__Issues__author_id" target="key__Users__user_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#2463a0;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.333333;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="930" />
+              <mxPoint x="960" y="820" />
+              <mxPoint x="1510" y="820" />
+              <mxPoint x="1510" y="516.6666666666666" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__Issues__pull_request_id" edge="1" parent="1" source="key__Issues__pull_request_id" target="key__PullRequests__pr_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#7350a1;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.250000;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="990" y="966" />
+              <mxPoint x="990" y="658" />
+              <mxPoint x="990" y="649.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__Issues__assignee_id" edge="1" parent="1" source="key__Issues__assignee_id" target="key__Users__user_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#2463a0;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.444444;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="1002" />
+              <mxPoint x="1020" y="850" />
+              <mxPoint x="1490" y="850" />
+              <mxPoint x="1490" y="525.5555555555555" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__IssueComments__issue_id" edge="1" parent="1" source="key__IssueComments__issue_id" target="key__Issues__issue_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#287d54;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.500000;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="864" />
+              <mxPoint x="480" y="858" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__IssueComments__repo_id" edge="1" parent="1" source="key__IssueComments__repo_id" target="key__Repositories__repo_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#a35f15;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.428571;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="440" y="900" />
+              <mxPoint x="440" y="1190" />
+              <mxPoint x="1490" y="1190" />
+              <mxPoint x="1490" y="1024.2857142857142" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__IssueComments__author_id" edge="1" parent="1" source="key__IssueComments__author_id" target="key__Users__user_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#2463a0;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.555556;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="936" />
+              <mxPoint x="460" y="1040" />
+              <mxPoint x="1470" y="1040" />
+              <mxPoint x="1470" y="534.4444444444445" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PRReviews__pr_id" edge="1" parent="1" source="key__PRReviews__pr_id" target="key__PullRequests__pr_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#7350a1;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.500000;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="434" />
+              <mxPoint x="1020" y="658" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PRReviews__repo_id" edge="1" parent="1" source="key__PRReviews__repo_id" target="key__Repositories__repo_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#a35f15;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.571429;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="470" />
+              <mxPoint x="960" y="1100" />
+              <mxPoint x="1450" y="1100" />
+              <mxPoint x="1450" y="1035.7142857142858" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PRReviews__reviewer_id" edge="1" parent="1" source="key__PRReviews__reviewer_id" target="key__Users__user_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#2463a0;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.666667;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940" y="506" />
+              <mxPoint x="940" y="280" />
+              <mxPoint x="1430" y="280" />
+              <mxPoint x="1430" y="543.3333333333334" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PRReviewComments__pr_id" edge="1" parent="1" source="key__PRReviewComments__pr_id" target="key__PullRequests__pr_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#7350a1;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.750000;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="394" />
+              <mxPoint x="460" y="220" />
+              <mxPoint x="1010" y="220" />
+              <mxPoint x="1010" y="658" />
+              <mxPoint x="1010" y="667.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PRReviewComments__repo_id" edge="1" parent="1" source="key__PRReviewComments__repo_id" target="key__Repositories__repo_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#a35f15;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.714286;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="430" />
+              <mxPoint x="430" y="180" />
+              <mxPoint x="1510" y="180" />
+              <mxPoint x="1510" y="1047.142857142857" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PRReviewComments__author_id" edge="1" parent="1" source="key__PRReviewComments__author_id" target="key__Users__user_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#2463a0;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.777778;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="490" y="466" />
+              <mxPoint x="490" y="250" />
+              <mxPoint x="1450" y="250" />
+              <mxPoint x="1450" y="552.2222222222222" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PRReviewComments__pull_request_review_id" edge="1" parent="1" source="key__PRReviewComments__pull_request_review_id" target="key__PRReviews__review_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#b34e52;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.500000;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="502" />
+              <mxPoint x="480" y="398" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__PRReviewComments__in_reply_to_id" edge="1" parent="1" source="key__PRReviewComments__in_reply_to_id" target="key__PRReviewComments__comment_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#337f85;strokeWidth=1.6;exitX=0;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.500000;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="20" y="538" />
+              <mxPoint x="20" y="358" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__Pushes__user_id" edge="1" parent="1" source="key__Pushes__user_id" target="key__Users__user_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#2463a0;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.888889;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="1194" />
+              <mxPoint x="450" y="1300" />
+              <mxPoint x="1430" y="1300" />
+              <mxPoint x="1430" y="561.1111111111111" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk__Pushes__repo_id" edge="1" parent="1" source="key__Pushes__repo_id" target="key__Repositories__repo_id" style="edgeStyle=segmentEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;endSize=8;startArrow=none;strokeColor=#a35f15;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.857143;entryPerimeter=0;jumpStyle=arc;jumpSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="1230" />
+              <mxPoint x="480" y="1270" />
+              <mxPoint x="1530" y="1270" />
+              <mxPoint x="1530" y="1058.5714285714287" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

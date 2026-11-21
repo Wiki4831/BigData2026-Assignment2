@@ -6,8 +6,3 @@ dependencies:
   - numpy>=1.26
   - pandas>=2.0
   - pyarrow>=14
-  - ipykernel
-  - jupyterlab
-  - matplotlib
-  - nbformat
-  - nbclient

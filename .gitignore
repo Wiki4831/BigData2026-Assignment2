@@ -5,3 +5,16 @@ __pycache__/
 .ipynb_checkpoints/
 output_TEST.csv
 *.pyc
+# local working files, not needed to reproduce the submission
+reports/
+notebooks/
+scripts/exp/
+SETUP.md
+requirements-setup.txt
+run.sh
+scripts/check_setup.py
+scripts/draw_schema*.py
+scripts/make_framework_pptx*.py
+scripts/relbench_contrastive.py
+scripts/relbench_mixed.py
+output_*.csv

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the RelBench environment used by scripts/relbench_asg2.py and scripts/predict_final.py.
+# Build the RelBench environment used by scripts/predict_final.py.
 # Recorded setup (verified on one machine; this script itself has not been re-run from an empty folder):
 #   Python 3.11 conda env "bigdata" (see environment.yml), torch 2.11.0+cu128, venv with --system-site-packages,
 #   relbench commit 5bec345fa6a424641152d8b45d91535d6a9750c4, pytorch-frame 0.3.0, torch-geometric 2.8.1,

@@ -1,17 +1,13 @@
 """Final submission pipeline: train the best recipe and write output_{studentID}.csv.
 
-Recipe (same as the experiments in scripts/relbench_asg2.py, nothing new is tuned here):
-RelBench GraphSAGE encoder (3 hops) -> pretrain 3 epochs on next-day BCE -> freeze -> 7-step GRU with
-daily BCE and a per-user recent-statistics module -> weekly probability = max of the 7 daily
+Recipe: RelBench GraphSAGE encoder (3 hops) -> pretrain 3 epochs on next-day BCE -> freeze -> 7-step GRU
+with daily BCE and a per-user recent-statistics module -> weekly probability = max of the 7 daily
 probabilities -> per-activity thresholds that maximise the validation score -> average over seeds.
 
-What is new compared with relbench_asg2.py:
-  * Forecast mode. Features are built at the forecast cutoff and no labels are needed.
-  * Data gap. GH Archive files end before the cutoff (the "gap"). Every training, validation and
-    forecast sample is built with the same gap: rows are visible only before (cutoff - gap), but the
-    relative-time encoder and the history statistics measure ages from the cutoff. With gap = 0 this
-    is exactly the original recipe.
-  * The validation week is the latest 7-day Taiwan-midnight window that ends inside the data.
+Data gap: GH Archive files end before the forecast cutoff (the "gap"). Every training, validation and
+forecast sample is built with the same gap: rows are visible only before (cutoff - gap), but the
+relative-time encoder and the history statistics measure ages from the cutoff. The validation week is
+the latest 7-day Taiwan-midnight window that ends inside the data.
 
 Rows at or after the cutoff are never used, even if the downloaded files contain them.
 """
@@ -35,11 +31,11 @@ import torch
 from torch_geometric import seed_everything
 from torch_geometric.loader import NeighborLoader
 
-import relbench_asg2 as R
+import rdl_model as R
 from evaluate import EVENT_COLS, OUTPUT_COLUMNS, USER_COL, read_predictions
 from gnn_model import NextDayActivityModel
 from model_data import ActivityData, Coverage, DAY, WEEK, hour_boundary, taipei_date, utc_timestamp
-from train_model import ROOT, choose_thresholds, evaluate_week, training_cutoffs, training_labels, write_atomically
+from common import ROOT, choose_thresholds, evaluate_week, training_cutoffs, training_labels, write_atomically
 from user_history import HistoryExtras, HistoryInputs
 
 
@@ -52,7 +48,7 @@ class GapHistoryInputs(HistoryInputs):
         c = np.int64(cutoff.to_datetime64().astype("datetime64[s]").astype(np.int64))
         bound = c - np.int64(gap.total_seconds())
         vis = (self.t < bound) & (self.r < bound)
-        # The body below is the non-v2 branch of HistoryInputs.stats, with ages measured from c.
+        # Same statistics as HistoryInputs.stats, with ages measured from c.
         from user_history import N_ACT, WINDOWS
         u, a, age = self.u[vis], self.act[vis], (c - self.t[vis]) / 86400.0
         cols = []
@@ -78,10 +74,8 @@ class GapHistoryInputs(HistoryInputs):
 
 def make_view(data, cutoff, user_ids, gap, *, labeled, horizon=WEEK, daily=False):
     """Users' graph membership as seen at (cutoff - gap), plus labels of the window starting at cutoff."""
-    visible = data.snapshot(cutoff - gap, user_ids, labeled=False)
-    view = SimpleNamespace(cutoff=cutoff, user_nodes=visible.user_nodes, target_counts=None, label_mask=None,
-                           next_day_counts=None, next_day_mask=None)
-    del visible
+    view = SimpleNamespace(cutoff=cutoff, user_nodes=data.user_nodes(cutoff - gap, user_ids), target_counts=None,
+                           label_mask=None, next_day_counts=None, next_day_mask=None)
     if labeled:
         counts, mask = data._targets(cutoff, pd.Index(user_ids, dtype="int64"), by_day=daily, horizon=horizon)
         if daily:
@@ -133,7 +127,7 @@ def make_loader(graph, data, user_ids, views, cold_id, args, gap, shuffle, hist=
     loader = NeighborLoader(graph, num_neighbors=R.neighbors_by_hop(args.hops), time_attr="time",
                             input_nodes=(R.ENTITY, torch.from_numpy(np.concatenate(nodes))),
                             input_time=torch.from_numpy(np.concatenate(times)), transform=transform,
-                            temporal_strategy=R.TEMPORAL_STRATEGY, batch_size=args.batch_size,
+                            temporal_strategy="uniform", batch_size=args.batch_size,
                             shuffle=shuffle, num_workers=0)
     mask = torch.from_numpy(np.concatenate(masks)).bool() if masks else None
     return loader, mask
@@ -156,7 +150,7 @@ def run_seed(seed, args, graph, column_stats, data, user_ids, cold_id, hist, gap
     pre_log = []
     for epoch in range(1, args.pretrain_epochs + 1):
         started = perf_counter()
-        loss, _ = R.train_epoch(history, optimizer, loader, mask, device)
+        loss = R.train_epoch(history, optimizer, loader, mask, device)
         pre_log.append({"epoch": epoch, "loss": loss, "seconds": perf_counter() - started})
         print(json.dumps({"seed": seed, "stage": "pretrain", **pre_log[-1]}), flush=True)
     del loader, mask
@@ -165,7 +159,7 @@ def run_seed(seed, args, graph, column_stats, data, user_ids, cold_id, hist, gap
     # Stage 2: seven-step GRU with the daily loss; the encoder stays frozen.
     model = NextDayActivityModel(history, R.DAILY_HIDDEN_SIZE, len(EVENT_COLS)).to(device)
     if args.history != "none":
-        model.extras = HistoryExtras(args.history, R.DAILY_HIDDEN_SIZE, cold_id, False).to(device)
+        model.extras = HistoryExtras(R.DAILY_HIDDEN_SIZE, cold_id).to(device)
     optimizer = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad), lr=R.DAILY_LEARNING_RATE)
     train_cutoffs = training_cutoffs(data.coverage, val_time, args.min_history_hours, stride=DAY)
     train_views = [make_view(data, c, user_ids, gap, labeled=True, daily=True) for c in train_cutoffs]
@@ -178,7 +172,7 @@ def run_seed(seed, args, graph, column_stats, data, user_ids, cold_id, hist, gap
     epochs = []
     for epoch in range(1, args.epochs + 1):
         started = perf_counter()
-        loss, _ = R.train_epoch(model, optimizer, train_loader, train_mask, device)
+        loss = R.train_epoch(model, optimizer, train_loader, train_mask, device)
         val_probabilities = R.predict(model, val_loader, device)
         _, score = choose_thresholds(val_probabilities, views["validation"])
         epochs.append({"epoch": epoch, "loss": loss, "validation_score": score, "seconds": perf_counter() - started})
@@ -239,7 +233,6 @@ def main():
     torch.set_num_threads(args.threads or (1 if device.type == "cuda" else 4))
     if args.deterministic:
         torch.use_deterministic_algorithms(True, warn_only=True)
-    R.HISTORY_MODE = args.history
 
     forecast = hour_boundary(args.forecast_cutoff)
     coverage = Coverage.read(args.manifest)
